@@ -13,7 +13,7 @@ const scene = new THREE.Scene()
 
 const camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR)
 scene.add(camera)
-camera.rotation.x += -0.3
+// camera.rotation.x += -0.3
 
 const renderer = new THREE.WebGLRenderer()
 renderer.setSize(WIDTH, HEIGHT)
@@ -125,23 +125,33 @@ function createSpheres() {
 }
 
 function updateCamera() {
+
+	let forward = new THREE.Vector3()
+	camera.getWorldDirection(forward)
+	let vertAxis = camera.up
+	let horixAxis = new THREE.Vector3()
+	horixAxis.crossVectors(vertAxis, forward)
 	if(up) {
-		camera.rotation.x += 0.01
+		camera.rotation.x += 0.05 * Math.cos(camera.rotation.y)
+		camera.rotation.y += 0.05 * Math.sin(camera.rotation.y)
+		camera.up.y +=0.05
 	}
 	if(down) {
-		camera.rotation.x -= 0.01
+		camera.rotation.x -= 0.05 * Math.cos(camera.rotation.y)
+		camera.rotation.y -= 0.05 * Math.sin(camera.rotation.y)
+		camera.up.y -=0.05
 	}
 	if(left) {
-		camera.rotation.y += 0.01
+		camera.rotation.y += 0.05
 	}
 	if(right) {
-		camera.rotation.y -= 0.01
+		camera.rotation.y -= 0.05
+	}
+	if(up || down || left || right) {
+		console.log(camera.rotation)
 	}
 	up = down = right = left = false
-	let forward = new THREE.Vector3
-	camera.getWorldDirection(forward)
 	camera.position.z += Math.sin(forward.z)
 	camera.position.y += Math.sin(forward.y)
 	camera.position.x += Math.sin(forward.x)
-	console.log(forward)
 }
